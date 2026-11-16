@@ -1,7 +1,7 @@
 Package: FEAST
 Type: Package
 Title: FEAST: fast expectation-maximization for microbial source tracking
-Version: 0.1.0
+Version: 0.1.1
 Author: Authors@R: person("Liat", "Shenhav", email = "liashenhav@gmail.com",
   role = c("aut", "cre"))
 Maintainer: The package maintainer <liashenhav@gmail.com>

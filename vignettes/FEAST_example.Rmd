@@ -56,10 +56,16 @@ The input to *FEAST* is composed of two tab-separated ASCII text files :
 Load the datasets as follows:
 
 ```{r example_input}
-metadata <- Load_metadata(metadata_path = "d:/Desktop/FEAST/Data_files/metadata_example_multi.txt")
-otus <- Load_CountMatrix(CountMatrix_path = "d:/Desktop/FEAST/Data_files/otu_example_multi.txt")
+metadata <- Load_metadata(metadata_path = "d:/Desktop/FEAST/Demo/metadata_example_multi.txt")
+otus <- Load_CountMatrix(CountMatrix_path = "d:/Desktop/FEAST/Demo/otu_example_multi.txt")
 ```
 
+
+```{r output_path, include = FALSE}
+# write the results to a temporary directory so the package source stays clean
+out_path <- file.path(tempdir(), "FEAST_results")
+dir.create(out_path, showWarnings = FALSE, recursive = TRUE)
+```
 
 ## Run *FEAST*
 
@@ -76,13 +82,13 @@ As input, *FEAST* takes mandatory arguments:
 Run FEAST, saving the output with prefix "demo".
 
 ```{r analyze_example}
-FEAST_output <- FEAST(C = otus, metadata = metadata, different_sources_flag = 1, dir_path = "d:/Desktop/FEAST/Data_files/",
+FEAST_output <- FEAST(C = otus, metadata = metadata, different_sources_flag = 1, dir_path = out_path,
                       outfile="demo")
 
 ```
 
 *FEAST* returns an S1 by S2 matrix P, where S1 is the number sinks and S2 is the number of sources (including an unknown source). Each row in matrix P sums to 1. Pij is the contribution of source j to sink i. If Pij == NA it indicateds that source j was not used in the analysis of sink i. 
-*FEAST* will save the file "demo_FEAST.txt" (a file containing matrix P) .
+*FEAST* will save the file "demo_source_contributions_matrix.txt" (a file containing matrix P) into `dir_path`.
 
 
 ##Graphical representation: 
@@ -97,13 +103,13 @@ As input, *PlotSourceContribution* takes mandatory arguments:
 contributions (summing to 1) to sink i.
 - _dir_path_ -  A path to an output .png file.
 - _Plot_title_ - Plot's title and output .png file's name.
-- _N_  - Number of barplot in each output .png file.
+- _N_  - Number of plots in each output .png file.
 - _plot_type_ -  Type of the plot: "bar" (default) for stacked barplots or "pie" for pie charts.
 
 ```{r plot_example, warning=FALSE}
 K = 2 #number of sinks to plot
 PlotSourceContribution(SinkNames = rownames(FEAST_output)[c(1:K)],
-                       SourceNames = colnames(FEAST_output), dir_path = "d:/Desktop/FEAST/Data_files/",
+                       SourceNames = colnames(FEAST_output), dir_path = out_path,
                        mixing_proportions = FEAST_output, Plot_title = "Test_",Same_sources_flag = 0, N = 2)
 ```
 
@@ -114,7 +120,7 @@ name (e.g. "Set2", "Dark2", "Paired") or a vector of colours (e.g. `c("#1b9e77",
 
 ```{r plot_pie_example, warning=FALSE}
 PlotSourceContribution(SinkNames = rownames(FEAST_output)[c(1:K)],
-                       SourceNames = colnames(FEAST_output), dir_path = "d:/Desktop/FEAST/Data_files/",
+                       SourceNames = colnames(FEAST_output), dir_path = out_path,
                        mixing_proportions = FEAST_output, Plot_title = "Pie_",Same_sources_flag = 0, N = 2,
                        plot_type = "pie", palette = "Set2")
 ```
